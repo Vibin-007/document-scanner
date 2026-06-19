@@ -211,7 +211,7 @@ inject_custom_css()
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 client = OpenAI(
-    api_key="sk-PM42AzFjbSoARy5vizuky8UsTpRXPTJjepsv0J9uevIXzhmU", 
+    api_key="YOUR_API_KEY", 
     base_url="https://api.cometapi.com/v1"
 )
 
