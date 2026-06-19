@@ -42,10 +42,6 @@ Ensure you have the following installed on your system:
 ### 2. Setup Language Packs
 Ensure you have placed the necessary language training data files in Tesseract's `tessdata` folder:
 * **Default Directory:** `C:\Program Files\Tesseract-OCR\tessdata\`
-* **Local Workspace Fallback:** You can also run the helper script `download_tessdata.py` to download them to a local `./tessdata` folder:
-  ```bash
-  python download_tessdata.py
-  ```
 
 ### 3. Install Dependencies
 Install all required libraries using `pip`:
@@ -75,6 +71,5 @@ This will spin up a local development server, typically accessible at `http://lo
 ## File Directory Structure
 
 * `app.py` - The main Streamlit web application with UI, camera integration, OCR processing, and OpenAI API integration.
-* `download_tessdata.py` - A utility script to download specific language packs from the official Tesseract repository.
 * `code.py` - A command-line script implementing the document capture (via OpenCV webcam window), image preprocessing, and summarization.
 * `tessdata/` - (Optional local directory) Stores the local language `.traineddata` files.
