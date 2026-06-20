@@ -216,11 +216,6 @@ if platform.system() == "Windows":
         r"C:\Program Files\Tesseract-OCR\tesseract.exe"
     )
 
-client = OpenAI(
-    api_key="YOUR_API_KEY", 
-    base_url="https://api.cometapi.com/v1"
-)
-
 def preprocess_image(image, enhance_contrast=True):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     
@@ -250,7 +245,11 @@ def extract_entities(text):
     phones = re.findall(r'\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}', text)
     return list(set(emails)), list(set(phones))
 
-def analyze_document(text, mode, target_lang="English"):
+def analyze_document(text, mode, target_lang="English", api_key=""):
+    client = OpenAI(
+        api_key=api_key, 
+        base_url="https://api.cometapi.com/v1"
+    )
     if mode == "General Summary":
         sys_prompt = "You are a helpful assistant. Provide a concise summary and 3 key bullet points of the text."
     elif mode == "Invoice / Receipt":
@@ -290,6 +289,15 @@ with st.sidebar:
     
     st.divider()
     st.header("AI Analysis Settings")
+    
+    default_key = os.environ.get("COMET_API_KEY", os.environ.get("OPENAI_API_KEY", ""))
+    api_key = st.text_input(
+        "API Key:",
+        value=default_key,
+        type="password",
+        help="Enter your Comet API key to enable AI features."
+    )
+    
     ai_mode = st.selectbox("Processing Mode:", ["General Summary", "Invoice / Receipt", "Translate"])
     
     target_language = "English"
@@ -500,12 +508,15 @@ if image_file is not None:
                 st.write(phones if phones else "None detected.")
 
             with tab1:
-                with st.spinner("Analyzing document..."):
-                    try:
-                        analysis_result = analyze_document(extracted_text, ai_mode, target_language)
-                        st.markdown(analysis_result)
-                        st.download_button("Download AI Report", analysis_result, file_name="ai_report.txt")
-                    except Exception as e:
-                        st.error(f"API Error: {e}")
+                if not api_key:
+                    st.warning("⚠️ API Key is missing. Please enter your API Key in the sidebar under 'AI Analysis Settings' to use AI features.")
+                else:
+                    with st.spinner("Analyzing document..."):
+                        try:
+                            analysis_result = analyze_document(extracted_text, ai_mode, target_language, api_key=api_key)
+                            st.markdown(analysis_result)
+                            st.download_button("Download AI Report", analysis_result, file_name="ai_report.txt")
+                        except Exception as e:
+                            st.error(f"API Error: {e}")
         else:
             st.error("No text found.")
