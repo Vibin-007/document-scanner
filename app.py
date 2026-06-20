@@ -208,7 +208,13 @@ def inject_custom_css():
 
 inject_custom_css()
 
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+import platform
+import pytesseract
+
+if platform.system() == "Windows":
+    pytesseract.pytesseract.tesseract_cmd = (
+        r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    )
 
 client = OpenAI(
     api_key="YOUR_API_KEY", 
